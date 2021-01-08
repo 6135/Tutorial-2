@@ -1,4 +1,4 @@
-// package app;
+package app;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -55,9 +55,10 @@ public class Population{
         initializePopulation(cells,startingFitness);
     }    
 
-    public Population(int size, int dnaSize){
+    public Population(int size, int dnaSize, Random random){
         this.populationSize = size;
         this.dnaSize = dnaSize;
+        this.random = random;
         this.population = new ArrayList<>();        
     }
 

@@ -115,8 +115,31 @@ public class Main {
         sc.close();
     }
 
+    public static void M(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        Cell leftParent = new Cell(sc.next());
+        Cell rightParent = new Cell(sc.next());
+
+        for(Cell cell : Cell.uniformCrossover(rightParent, leftParent, generator))
+            System.out.println(cell);
+        sc.close();
+    }
+
+    public static void N(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        double pm = Double.parseDouble(sc.next());
+        String s = sc.next();
+        System.out.println( (new Cell(s)).nbitflip(pm, generator) );
+
+        sc.close();
+    }
+
     public static void main(String[] args) {
-        L(args);
+        N(args);
     }
 
 }
