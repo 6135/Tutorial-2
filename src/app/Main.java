@@ -1,4 +1,4 @@
-package app;
+// package app;
 
 import java.util.*;
 import java.text.*;
@@ -25,7 +25,7 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator, Fitness.cmpFindMax);
+        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator);
         System.out.println(ppl.toString());
         sc.close();
     }
@@ -56,11 +56,8 @@ public class Main {
         while(sc.hasNext())
             fitness.add(Double.parseDouble(sc.next()));
 
-        Population ppl = new Population(n, d, generator, Fitness.cmpBasicFit, fitness);
-        List<Cell> winners = ppl.tournament();
-        for (Cell cell : winners) {
-            System.out.println(cell.toString());
-        }
+        Population ppl = new Population(n, d, generator, fitness);
+        System.out.println(ppl.tournament());
         sc.close();
     }
 
@@ -78,16 +75,34 @@ public class Main {
             fitness.add(d);
         }
 
-        Population ppl = new Population(cells.size(), cells.get(0).length(), generator, Fitness.cmpBasicFit, cells, fitness);
-        List<Cell> winners = ppl.spin();
-        for (Cell cell : winners) {
-            System.out.println(cell.toString());
+        Population ppl = new Population(cells.size(), cells.get(0).length(), generator, cells, fitness);
+        ppl = ppl.spin();
+        System.out.println(ppl.toString());
+        sc.close();
+    }
+
+    public static void K(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        List<String> cells = new ArrayList<>();
+        List<Double> fitness = new ArrayList<>();
+
+        while(sc.hasNext()){
+            String s = sc.next();
+            cells.add(s);
+            Double d = Double.parseDouble(sc.next());
+            fitness.add(d);
         }
+
+        Population ppl = new Population(cells.size(), cells.get(0).length(), generator, cells, fitness);
+        ppl = ppl.SUS();
+        System.out.println(ppl.toString());
         sc.close();
     }
 
     public static void main(String[] args) {
-        J(args);
+        K(args);
     }
 
 }
