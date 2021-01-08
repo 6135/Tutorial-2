@@ -35,7 +35,7 @@ public class Population{
      * @param dnaSize Size of the chromosomes 
      * @param random The random generator
      */
-    public Population(int populationSize, int dnaSize, Random random, Comparator<Cell> cmp, List<Integer> startingFitness){
+    public Population(int populationSize, int dnaSize, Random random, Comparator<Cell> cmp, List<Double> startingFitness){
         this.populationSize = populationSize;
         this.dnaSize = dnaSize;
         this.random = random;
@@ -44,16 +44,37 @@ public class Population{
         initializePopulation(startingFitness);
     }    
 
+    /**
+     * 
+     * @param populationSize Size of the disired population
+     * @param dnaSize Size of the chromosomes 
+     * @param random The random generator
+     */
+    public Population(int populationSize, int dnaSize, Random random, Comparator<Cell> cmp, List<String> cells,  List<Double> startingFitness){
+        this.populationSize = populationSize;
+        this.dnaSize = dnaSize;
+        this.random = random;
+        this.fitnessCmp = cmp;
+        this.population = new ArrayList<>();
+        initializePopulation(cells,startingFitness);
+    }    
+
     private void initializePopulation(){
         if( population.isEmpty())
             for (int i = 0; i < populationSize; i++)
                 population.add(Cell.newCell(dnaSize, random));
     }
 
-    private void initializePopulation(List<Integer> startingFitness){
+    private void initializePopulation(List<Double> startingFitness){
         if( population.isEmpty())
             for (int i = 0; i < populationSize; i++)
                 population.add(Cell.newCell(dnaSize, random,startingFitness.get(i)));
+    }
+
+    private void initializePopulation(List<String> cells, List<Double> startingFitness){
+        if( population.isEmpty())
+            for (int i = 0; i < populationSize; i++)
+                population.add( new Cell(cells.get(i), startingFitness.get(i)));
     }
 
     @Override
@@ -73,10 +94,10 @@ public class Population{
         for (int i = 0; i < populationSize; i++) {
             int a = 0; int b = populationSize-1;
             double u = random.nextDouble();
-            System.out.println(u);
+            //System.out.println(u);
             int index1 = (int) (a + Math.round(u * (b - a)));
             u = random.nextDouble();
-            System.out.println(u);
+            //System.out.println(u);
             int index2 = (int) (a + Math.round(u * (b - a)));
             Cell one = population.get(index1);
             Cell two = population.get(index2);
@@ -87,6 +108,32 @@ public class Population{
         }
         return winners;
     }
+    public List<Cell> spin(){
+
+        List<Cell> winners = new ArrayList<>();
+        int totalSum,partial;
+        population.sort(Fitness.cmpBasicFit);
+        for (int i = 0; i < populationSize; i++) {
+            totalSum=0;
+            partial = 0;
+            
+            for (Cell cell : population) 
+                totalSum+=cell.fitness;
+            double u = random.nextDouble();
+            int rand = (int) (0 + Math.round(u * (totalSum - 0)));
+            for (Cell cell : population) {
+                partial+=cell.fitness;
+                if(partial >= rand){
+                    winners.add(cell);
+                    break;
+                }
+            }
+            
+        }
+        winners.sort(Fitness.cmpDnaOrder);
+        return winners;
+    }
+
     
     
 

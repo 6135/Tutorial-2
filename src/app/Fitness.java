@@ -23,4 +23,12 @@ public class Fitness {
 		return (int) Math.pow(Integer.parseInt(next, base), 2);
     }   
     
+    public static Comparator<Cell> cmpDnaOrder = new Comparator<>() {
+        public int compare(Cell o1, Cell o2) {
+            return o1.dna.compareTo(o2.dna);
+        }
+    }; 
+
+
+
 }

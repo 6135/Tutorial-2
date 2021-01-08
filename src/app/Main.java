@@ -25,10 +25,6 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        // unusualSymbols.setDecimalSeparator('.');
-        // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
-
         Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator, Fitness.cmpFindMax);
         System.out.println(ppl.toString());
         sc.close();
@@ -38,10 +34,6 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        // unusualSymbols.setDecimalSeparator('.');
-        // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
-
         System.out.println(Fitness.findmax(sc.next(), '1'));
         sc.close();
     }
@@ -50,9 +42,6 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        // unusualSymbols.setDecimalSeparator('.');
-        // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
 
         System.out.println(Fitness.stringToBaseSquared(sc.next(), 2));
         sc.close();
@@ -61,14 +50,11 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
-        // unusualSymbols.setDecimalSeparator('.');
-        // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
         int n = sc.nextInt();
         int d = sc.nextInt();
-        List<Integer> fitness = new ArrayList<>();
-        while(sc.hasNextInt())
-            fitness.add(sc.nextInt());
+        List<Double> fitness = new ArrayList<>();
+        while(sc.hasNext())
+            fitness.add(Double.parseDouble(sc.next()));
 
         Population ppl = new Population(n, d, generator, Fitness.cmpBasicFit, fitness);
         List<Cell> winners = ppl.tournament();
@@ -78,8 +64,30 @@ public class Main {
         sc.close();
     }
 
+    public static void J(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        List<String> cells = new ArrayList<>();
+        List<Double> fitness = new ArrayList<>();
+
+        while(sc.hasNext()){
+            String s = sc.next();
+            cells.add(s);
+            Double d = Double.parseDouble(sc.next());
+            fitness.add(d);
+        }
+
+        Population ppl = new Population(cells.size(), cells.get(0).length(), generator, Fitness.cmpBasicFit, cells, fitness);
+        List<Cell> winners = ppl.spin();
+        for (Cell cell : winners) {
+            System.out.println(cell.toString());
+        }
+        sc.close();
+    }
+
     public static void main(String[] args) {
-        I(args);
+        J(args);
     }
 
 }

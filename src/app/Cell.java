@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Cell {
     String dna;
-    int fitness;
+    double fitness;
 
     /**
      * Init cell with  starting dna
@@ -19,12 +19,12 @@ public class Cell {
     /**
      * Init cell with dna and fitness specific
      */
-    public Cell(String dna, int fitness){
+    public Cell(String dna, double fitness){
         this.dna = dna;
         this.fitness = fitness;
     }
 
-    public static final Cell newCell(int chromosomeSize, Random random, int fitness){
+    public static final Cell newCell(int chromosomeSize, Random random, double fitness){
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < chromosomeSize; i++){
             sb.append(newBit(random.nextDouble()));
@@ -49,5 +49,13 @@ public class Cell {
         return dna;
     }
 
+    @Override
+    public boolean equals(Object c){
+        if(c instanceof Cell){
+            Cell cell = (Cell) c;
+            return cell.dna.equals(this.dna);
+        }   
+        return false;
+    }
  
 }
