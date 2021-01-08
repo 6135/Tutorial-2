@@ -1,5 +1,7 @@
 // package app;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Cell {
@@ -8,8 +10,6 @@ public class Cell {
 
     /**
      * Init cell with  starting dna
-     * @param leftParent left parent
-     * @param rightParent right parent
      * @param dna starting dna
      */
     public Cell(String dna){
@@ -56,6 +56,27 @@ public class Cell {
             return cell.dna.equals(this.dna);
         }   
         return false;
+    }
+
+    public static List<Cell> singlePointCrossover(Cell rightParent, Cell leftParent, int crossPoint){
+        List<String> subChromossomes = new ArrayList<>(); //This list will be half for rP Chromosomes splits and half for lP chromosomes splits
+        
+        subChromossomes.add(leftParent.dna.substring(0, crossPoint));
+        subChromossomes.add(rightParent.dna.substring(0, crossPoint));
+
+        subChromossomes.add(rightParent.dna.substring(crossPoint));
+        subChromossomes.add(leftParent.dna.substring(crossPoint));
+        
+        //System.out.println(subChromossomes);
+        List<Cell> children = new ArrayList<>();
+        StringBuilder sb;
+        for(int i = 0; i < subChromossomes.size()/2; i++){
+            sb = new StringBuilder();
+            sb.append(subChromossomes.get(i));
+            sb.append(subChromossomes.get(i+subChromossomes.size()/2));
+            children.add(new Cell(sb.toString()));
+        }
+        return children;
     }
  
 }

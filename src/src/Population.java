@@ -139,7 +139,7 @@ public class Population{
             last+=(cell.fitness/sum);
             probs.add(last);
         }
-        
+
         for(int i = 0; i<populationSize;i++){
             double rand = random.nextDouble();
             for(int j = 0; j<probs.size();j++){

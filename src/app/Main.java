@@ -101,8 +101,22 @@ public class Main {
         sc.close();
     }
 
+    public static void L(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        Cell leftParent = new Cell(sc.next());
+        Cell rightParent = new Cell(sc.next());
+
+        int crossPoint = (int) (0 + Math.round(generator.nextDouble() * (leftParent.dna.length()- 0)));
+
+        for(Cell cell : Cell.singlePointCrossover(rightParent, leftParent, crossPoint))
+            System.out.println(cell);
+        sc.close();
+    }
+
     public static void main(String[] args) {
-        K(args);
+        L(args);
     }
 
 }
