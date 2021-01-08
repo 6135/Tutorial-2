@@ -1,4 +1,4 @@
-package app;
+// package app;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -112,20 +112,20 @@ public class Population{
 
         List<Cell> winners = new ArrayList<>();
         int totalSum,partial;
-        population.sort(Fitness.cmpBasicFit);
+        population.sort(Fitness.cmpBasicFit.reversed());
         for (int i = 0; i < populationSize; i++) {
             totalSum=0;
             partial = 0;
             
             for (Cell cell : population) 
                 totalSum+=cell.fitness;
-
-            double u = random.nextDouble();
-            int rand = (int) (0 + Math.round(u * ((totalSum) - 0)));
-            System.out.println(rand);
+            //double u = random.nextDouble();
+            int rand = random.nextInt(totalSum+1);//(int) (0 + Math.round(u * (totalSum - 0)));
+            //System.out.println(rand);
             for (Cell cell : population) {
                 partial+=cell.fitness;
                 if(partial >= rand){
+                    //System.out.println("adding + " +  cell.toString());
                     winners.add(cell);
                     break;
                 }
