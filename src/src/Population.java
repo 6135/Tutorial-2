@@ -1,6 +1,9 @@
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -8,6 +11,7 @@ public class Population{
     int populationSize;
     int dnaSize;
     Random random;
+    Comparator<Cell> fitnessCmp;
     List<Cell> population;
     /**
      * 
@@ -15,33 +19,40 @@ public class Population{
      * @param dnaSize Size of the chromosomes 
      * @param random The random generator
      */
-    public Population(int populationSize, int dnaSize, Random random){
+    public Population(int populationSize, int dnaSize, Random random, Comparator<Cell> cmp){
         this.populationSize = populationSize;
         this.dnaSize = dnaSize;
         this.random = random;
+        this.fitnessCmp = cmp;
         this.population = new ArrayList<>();
         initializePopulation();
-
     }
+
     /**
      * 
      * @param populationSize Size of the disired population
      * @param dnaSize Size of the chromosomes 
      * @param random The random generator
-     * @param initPopulation The initial population
      */
-    public Population(int populationSize, int dnaSize, Random random, List<Cell> initPopulation){
+    public Population(int populationSize, int dnaSize, Random random, Comparator<Cell> cmp, List<Integer> startingFitness){
         this.populationSize = populationSize;
         this.dnaSize = dnaSize;
         this.random = random;
-        this.population = new ArrayList<>(initPopulation);
-
-    }
+        this.fitnessCmp = cmp;
+        this.population = new ArrayList<>();
+        initializePopulation(startingFitness);
+    }    
 
     private void initializePopulation(){
         if( population.isEmpty())
             for (int i = 0; i < populationSize; i++)
                 population.add(Cell.newCell(dnaSize, random));
+    }
+
+    private void initializePopulation(List<Integer> startingFitness){
+        if( population.isEmpty())
+            for (int i = 0; i < populationSize; i++)
+                population.add(Cell.newCell(dnaSize, random,startingFitness.get(i)));
     }
 
     @Override
@@ -55,11 +66,28 @@ public class Population{
         return sb.toString();
     }
 
-    public static int findmax(String s, char f){
-        return (int) s.chars().filter(chr -> chr == f).count();
-    }
+    public List<Cell> tournament(){
 
-	public static int stringToBase(String next, int base) {
-		return (int) Math.pow(Integer.parseInt(next, base), 2);
-	}
+        List<Cell> winners = new ArrayList<>();
+        for (int i = 0; i < populationSize; i++) {
+            int a = 0; int b = populationSize-1;
+            double u = random.nextDouble();
+            System.out.println(u);
+            int index1 = (int) (a + Math.round(u * (b - a)));
+            u = random.nextDouble();
+            System.out.println(u);
+            int index2 = (int) (a + Math.round(u * (b - a)));
+            Cell one = population.get(index1);
+            Cell two = population.get(index2);
+            int value = fitnessCmp.compare(one, two);
+            if(value >= 0 )
+                winners.add(one);
+            else winners.add(two);
+        }
+        return winners;
+    }
+    
+    
+
+
 }

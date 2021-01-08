@@ -28,7 +28,7 @@ public class Main {
         // unusualSymbols.setDecimalSeparator('.');
         // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
 
-        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator);
+        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator, Fitness.cmpFindMax);
         System.out.println(ppl.toString());
         sc.close();
     }
@@ -41,7 +41,7 @@ public class Main {
         // unusualSymbols.setDecimalSeparator('.');
         // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
 
-        System.out.println(Population.findmax(sc.next(), '1'));
+        System.out.println(Fitness.findmax(sc.next(), '1'));
         sc.close();
     }
 
@@ -53,12 +53,32 @@ public class Main {
         // unusualSymbols.setDecimalSeparator('.');
         // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
 
-        System.out.println(Population.stringToBase(sc.next(), 2));
+        System.out.println(Fitness.stringToBaseSquared(sc.next(), 2));
+        sc.close();
+    }
+    public static void I(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        // DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
+        // unusualSymbols.setDecimalSeparator('.');
+        // DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
+        int n = sc.nextInt();
+        int d = sc.nextInt();
+        List<Integer> fitness = new ArrayList<>();
+        for (int i = 0; i < n; i++)
+            fitness.add(sc.nextInt());
+
+        Population ppl = new Population(n, d, generator, Fitness.cmpBasicFit, fitness);
+        List<Cell> winners = ppl.tournament();
+        for (Cell cell : winners) {
+            System.out.println(cell.toString());
+        }
         sc.close();
     }
 
     public static void main(String[] args) {
-        H(args);
+        I(args);
     }
 
 }
