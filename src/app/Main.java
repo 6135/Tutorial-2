@@ -25,7 +25,7 @@ public class Main {
         Random generator = new Random(0);
         Scanner sc = new Scanner(System.in);
 
-        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator);
+        Population ppl = new Population(sc.nextInt(), sc.nextInt(), generator,true);
         System.out.println(ppl.toString());
         sc.close();
     }
@@ -138,8 +138,54 @@ public class Main {
         sc.close();
     }
 
+    public static void O(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        List<Integer> list = Population.randomPermutation(sc.nextInt(), generator);
+        for (Integer integer : list) System.out.println(integer);
+
+        sc.close();
+    }
+
+    public static void P(String[] args){
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        List<String> cells = new ArrayList<>();
+        List<Double> fitness = new ArrayList<>();
+        int s = sc.nextInt();
+        while(sc.hasNext()){
+            String str = sc.next();
+            cells.add(str);
+            Double d = Double.parseDouble(sc.next());
+            fitness.add(d);
+        }
+
+        Population ppl = new Population(cells.size(), cells.get(0).length(), generator, cells, fitness);
+        ppl = ppl.tournamentWithoutReplacement(s);
+        System.out.println(ppl.toString());
+        sc.close();
+    }
+    public static void Q(String[] args) {
+        Random generator = new Random(0);
+        Scanner sc = new Scanner(System.in);
+
+        DecimalFormatSymbols unusualSymbols = new DecimalFormatSymbols();
+        unusualSymbols.setDecimalSeparator('.');
+        DecimalFormat df = new DecimalFormat("0.00", unusualSymbols);
+
+        Population p = new Population(sc.nextInt(), sc.nextInt(),generator); //onemax
+        int s = sc.nextInt();
+        double pm = Double.parseDouble(sc.next());
+        double pc = Double.parseDouble(sc.next());
+        System.out.println("0: " + df.format(p.maxFitness()) + " " + df.format(p.averageFitness()) + " " + df.format(p.minFitness()));
+        p.generationOneMax(s, pm, pc);
+        System.out.println("1: " + df.format(p.maxFitness()) + " " + df.format(p.averageFitness()) + " " + df.format(p.minFitness()));
+
+    }
     public static void main(String[] args) {
-        N(args);
+        Q(args);
     }
 
 }

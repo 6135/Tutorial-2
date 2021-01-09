@@ -1,9 +1,7 @@
 package app;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -13,8 +11,21 @@ public class Population{
     int dnaSize;
     Random random;
     List<Cell> population;
+
     /**
-     * 
+     * Empty Population without cell initialization and no population limit
+     * @param dnaSize Size of the chromosomes 
+     * @param random The random generator
+     */
+    public Population(int dnaSize, Random random){
+        this.populationSize = 0;
+        this.dnaSize = dnaSize;
+        this.random = random;
+        this.population = new ArrayList<>();
+    }
+
+   /**
+     * New Population with cell initialization, dynamic fitness based on onemax.
      * @param populationSize Size of the disired population
      * @param dnaSize Size of the chromosomes 
      * @param random The random generator
@@ -24,14 +35,32 @@ public class Population{
         this.dnaSize = dnaSize;
         this.random = random;
         this.population = new ArrayList<>();
-        initializePopulation();
+        initializePopulationOneMax();
+    }
+    
+    /**
+     * New Population with basic toggleable cell initialization, no fitness.
+     * 
+     * @param populationSize Size of the disired population
+     * @param dnaSize        Size of the chromosomes
+     * @param random         The random generator
+     * @param initPopulation If the population is to be initialized with random
+     *                       cells
+     */
+    public Population(int populationSize, int dnaSize, Random random, boolean initPopulation){
+        this.populationSize = populationSize;
+        this.dnaSize = dnaSize;
+        this.random = random;
+        this.population = new ArrayList<>();
+        if(initPopulation) initializePopulation();
     }
 
     /**
-     * 
-     * @param populationSize Size of the disired population
-     * @param dnaSize Size of the chromosomes 
+     * New Population with basic toggleable cell initialization, static fitness.
+     * @param populationSize Size of the desired population
+     * @param dnaSize Size of the chromosomes
      * @param random The random generator
+     * @param startingFitness List of fixed fitnesses to be given to the cells that are randomly generated
      */
     public Population(int populationSize, int dnaSize, Random random, List<Double> startingFitness){
         this.populationSize = populationSize;
@@ -42,10 +71,12 @@ public class Population{
     }    
 
     /**
-     * 
-     * @param populationSize Size of the disired population
-     * @param dnaSize Size of the chromosomes 
+     * New Population with no cell initialization, staatic fitness, static cells.
+     * @param populationSize Size of the desired population
+     * @param dnaSize Size of the chromosomes
      * @param random The random generator
+     * @param cells List of fixed cells
+     * @param startingFitness List of fixed fitnesses to be given to the cells that are randomly generated
      */
     public Population(int populationSize, int dnaSize, Random random, List<String> cells,  List<Double> startingFitness){
         this.populationSize = populationSize;
@@ -53,19 +84,21 @@ public class Population{
         this.random = random;
         this.population = new ArrayList<>();
         initializePopulation(cells,startingFitness);
-    }    
+    }     
 
-    public Population(int size, int dnaSize, Random random){
-        this.populationSize = size;
-        this.dnaSize = dnaSize;
-        this.random = random;
-        this.population = new ArrayList<>();        
-    }
+
 
     private void initializePopulation(){
         if( population.isEmpty())
             for (int i = 0; i < populationSize; i++)
                 population.add(Cell.newCell(dnaSize, random));
+    }
+
+    private void initializePopulationOneMax() {
+        if( population.isEmpty())
+            for (int i = 0; i < populationSize; i++){
+                population.add(Cell.newCellOneMax(dnaSize, random));    
+            }    
     }
 
     private void initializePopulation(List<Double> startingFitness){
@@ -92,16 +125,14 @@ public class Population{
     }
 
     public Population tournament(){
-        Population p = new Population(populationSize,dnaSize);
-        List<Cell> winners = new ArrayList<>();
-        for (int i = 0; i < populationSize; i++) {
-            p.add(tourny());
-        }
+        Population p = new Population(populationSize,dnaSize, random, false);
+        for (int i = 0; i < populationSize; i++) p.add(tourny());
         return p;
     }
 
     public Cell tourny(){
-        int a = 0; int b = populationSize-1;
+        int a = 0; 
+        int b = populationSize-1;
         int index1 = (int) (a + Math.round(random.nextDouble() * (b - a)));
         int index2 = (int) (a + Math.round(random.nextDouble() * (b - a)));
         Cell one = population.get(index1);
@@ -128,7 +159,7 @@ public class Population{
 
     public Population spin(){
         sort(Fitness.cmpFitAscending.reversed());
-        Population p = new Population(populationSize,dnaSize);
+        Population p = new Population(populationSize,dnaSize,random,false);
         double sum = fitnessSum();
         if(sum == 0)
             sum=1;
@@ -159,7 +190,7 @@ public class Population{
     public Population SUS(){
         // sort(Fitness.cmpFitAscending);
         // System.out.println(this);
-        Population p = new Population(populationSize,dnaSize);
+        Population p = new Population(populationSize,dnaSize,random,false);
         double sum = fitnessSum();
         double space = sum/populationSize;
         double start = (Math.round(random.nextDouble() * (space)));
@@ -183,10 +214,108 @@ public class Population{
 
     private void add(Cell cell){
         population.add(cell);
+        if(populationSize < population.size()) populationSize++;
     }
     
     public void sort(Comparator<Cell> cmp){
         population.sort(cmp);
     }
 
+    public static List<Integer> randomPermutation(int size, Random random){
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) list.add(i);
+        
+        for (int i = 0; i < size-1; i++) {
+            int r = (int) (i + Math.round(random.nextDouble() * ((size-1) - i)));
+            Collections.swap(list,r,i);
+        }
+        return list;
+    }
+    private Population randomPermutatedPopulation(){
+        List<Integer> positions = Population.randomPermutation(populationSize, random);
+        Population p = new Population(populationSize, dnaSize, random, false);
+        // System.out.println("Old pop");
+        // System.out.println(this);
+        for (Integer integer : positions)
+            p.add(population.get(integer));
+        // System.out.println("random");
+        // System.out.println(p.population);
+        // System.out.println("------");
+        return p;
+    }
+    public Population tournamentWithoutReplacement(int iter){
+        Population p = new Population(populationSize,dnaSize,random,false);
+        Population result = p;
+        for (int i = 0; i < iter; i++) {
+            p = this.randomPermutatedPopulation();
+            for (int j = 0; j < populationSize/iter; j++) {
+                List<Cell> sublist = p.population.subList(j*iter, (j*iter) + iter); // 0x2 == 0 -> 0 + 2,  1x2 = 2 -> 2+2  etc
+                // System.out.println(sublist.toString() + " best from: " + Fitness.getBest(sublist, Fitness.cmpFitAscending));
+                result.add(Fitness.getBest(sublist, Fitness.cmpFitAscending));
+            }
+        }
+        return result;
+        
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Population){
+            Population p = (Population) obj;
+            return population.equals(p.population);
+        }
+        return false;
+    }
+
+    public void addAll(List<Cell> list){
+        for (Cell cell : list) {
+            this.add(cell);
+        }
+    }
+
+    public void merge(Population p){
+        for (Cell cell : p.population) {
+            this.add(cell);
+        }
+    }
+    public Cell get(int i){
+        if(i<populationSize)
+            return population.get(i);
+        else return null;
+    }
+    private void singlePointCrossoverProbPopulation(double pc){
+        int crossPoint = (int) (0 + Math.round(random.nextDouble() * ((dnaSize-1) - 0)));
+        List<Cell> children;
+        for (int i = 0; i < population.size(); i+=2){
+            children = Cell.singlePointCrossoverProbabilistic(population.get(i), population.get(i+1), crossPoint, random, pc);
+            for(int j=i; j < i+2;j++)
+                population.set(j,children.get(j));
+        }
+    }
+
+    private void nbitFlipPop(double pm){
+        int i=0;
+        for (Cell cell : population) {
+            population.set(i,cell.nbitflip(pm, random));
+            i++;
+        }
+    }
+
+    public double maxFitness(){
+        return Collections.max(population,Fitness.cmpFitAscending).fitness;
+    }
+    public double averageFitness(){
+        return fitnessSum()/populationSize;
+    }
+    public double minFitness(){
+        return Collections.min(population,Fitness.cmpFitAscending).fitness;
+    }
+
+    public void generationOneMax(int s, double pm, double pc){
+        Population p = tournamentWithoutReplacement(s);
+        this.population = p.population;
+        singlePointCrossoverProbPopulation(pc);
+        nbitFlipPop(pm);
+    }
 }
