@@ -1,4 +1,4 @@
-// package app;
+package app;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -317,11 +317,15 @@ public class Population{
     }
 
     public Population generationOneMax(int s, double pm, double pc){
-
+        System.out.println("Original " + population.toString());
         Population p = tournamentWithoutReplacement(s);
+        System.out.println("Torneio " + population.toString());
         p.singlePointCrossoverProbPopulation(pc);
+        System.out.println("Crossover " + population.toString());
         p.nbitFlipPop(pm);
+        System.out.println("Mutation " + population.toString());
         p.recalcFitnessOneMax();
+        System.out.println("Recalculated fitness " + population.toString());
         return p;
     }
 }
