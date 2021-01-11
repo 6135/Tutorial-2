@@ -319,13 +319,12 @@ public class Population{
     public Population generationOneMax(int s, double pm, double pc){
         System.out.println("Original " + population.toString());
         Population p = tournamentWithoutReplacement(s);
-        System.out.println("Torneio " + population.toString());
+        System.out.println("Torneio " + p.population.toString());
         p.singlePointCrossoverProbPopulation(pc);
-        System.out.println("Crossover " + population.toString());
+        System.out.println("Crossover " + p.population.toString());
         p.nbitFlipPop(pm);
-        System.out.println("Mutation " + population.toString());
+        System.out.println("Mutation " + p.population.toString());
         p.recalcFitnessOneMax();
-        System.out.println("Recalculated fitness " + population.toString());
         return p;
     }
 }

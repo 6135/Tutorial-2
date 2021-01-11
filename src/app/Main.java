@@ -201,11 +201,9 @@ public class Main {
             p = p.generationOneMax(s, pm, pc);
             System.out.println(i+": " + df.format(p.maxFitness()) + " " + df.format(p.averageFitness()) + " " + df.format(p.minFitness()));            
         }
-
-
     }
     public static void main(String[] args) {
-        R();
+        Q();
     }
 
 }
