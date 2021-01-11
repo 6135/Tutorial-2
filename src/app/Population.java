@@ -317,7 +317,7 @@ public class Population{
     }
 
     public Population generationOneMax(int s, double pm, double pc){
-        System.out.println("Original " + population.toString());
+        // System.out.println("Original " + population.toString());
         Population p = tournamentWithoutReplacement(s);
         System.out.println("Torneio " + p.population.toString());
         p.singlePointCrossoverProbPopulation(pc);
