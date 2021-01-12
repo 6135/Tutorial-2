@@ -108,7 +108,7 @@ public class Main {
         Cell leftParent = new Cell(sc.next());
         Cell rightParent = new Cell(sc.next());
 
-        for(Cell cell : Cell.singlePointCrossover(rightParent, leftParent, generator))
+        for(Cell cell : Cell.singlePointCrossover(leftParent,rightParent, generator))
             System.out.println(cell);
         sc.close();
     }
@@ -120,7 +120,7 @@ public class Main {
         Cell leftParent = new Cell(sc.next());
         Cell rightParent = new Cell(sc.next());
 
-        for(Cell cell : Cell.uniformCrossover(rightParent, leftParent, generator))
+        for(Cell cell : Cell.uniformCrossover(leftParent, rightParent, generator))
             System.out.println(cell);
         sc.close();
     }
@@ -201,6 +201,7 @@ public class Main {
             p = p.generationOneMax(s, pm, pc);
             System.out.println(i+": " + df.format(p.maxFitness()) + " " + df.format(p.averageFitness()) + " " + df.format(p.minFitness()));            
         }
+
     }
     public static void main(String[] args) {
         Q();
